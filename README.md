@@ -1,36 +1,283 @@
-QAIG Optimization Suite: Quantum & Hybrid Architectures!(https://img.shields.io/badge/D--Wave-Ocean_SDK-00b4d8)!(https://img.shields.io/badge/Google-OR--Tools-ea4335)📌 Project OverviewThis repository contains the technical implementation for the QAIG Research Engineer screening assignment. It establishes robust, scalable frameworks for evaluating NP-hard combinatorial optimization problems utilizing a spectrum of Classical, Gate-Based Quantum (VQA), and Quantum-Inspired (Simulated Annealing) paradigms.The suite resolves two primary challenges:Max-Cut Optimization: Processed via Randomized Greedy Heuristics, Qiskit 1.x QAOA, and D-Wave Simulated Annealing.Vehicle Routing Problem with Time Windows (VRPTW): Modeled mathematically as a Mixed-Integer Linear Program (MILP) and solved via Google OR-Tools alongside a highly specialized Two-Phase Hybrid Quantum-Classical heuristic.🏗️ Repository ArchitectureBased on professional software engineering standards, the codebase is completely modularized, decoupling mathematical formulations from solvers and visualization logic.textqaig-optimization-suite/├── src/│   ├── maxcut/             # Max-Cut formulations, QAOA, and SA solvers│   ├── vrptw/              # Synthetic data generation, OR-Tools, and Hybrid Pipeline│   └── utils/              # Plotting engines and metric tracking (matplotlib TkAgg)├── tests/                  # Pytest suite validating deterministic algorithm behavior├── data/                   # GSET raw data ingest directory├── outputs/                # Generated PNG plots, circuits, and convergence logs├── main.py                 # Primary orchestration pipeline├── config.py               # Centralized hyperparameter and environment management├── requirements.txt        # Locked dependency manifest└──.gitignore              # Securely excludes virtual environments and pycache
+# QAIG Optimization Screening
+
+> Hybrid Quantum Optimization using **Qiskit**, **QUBO**, **QAOA**, **Simulated Annealing**, and **Google OR-Tools**
+
+## Overview
+
+This repository contains my submission for the QAIG (TheQuantum.ai) Optimization Screening Assignment.
+
+The project addresses two NP-hard optimization problems:
+
+1. **Maximum Cut (Max-Cut)** using classical, quantum-inspired, and gate-based quantum approaches.
+2. **Vehicle Routing Problem with Time Windows (VRPTW)** using a hybrid quantum-classical workflow.
+
+The implementation emphasizes clean software architecture, modularity, reproducibility, and explainable engineering decisions.
+
 ---
 
-## ⚙️ Installation & Execution
+# Repository Structure
 
-### Prerequisites
-Ensure you have Python 3.10 or higher installed. This project relies on the modern Qiskit 1.x Primitive V2 APIs and the unified D-Wave Ocean SDK.
+```text
+Qaig_optimization_screening/
+│
+├── README.md
+├── main.py
+├── config.py
+├── requirements.txt
+├── pytest.ini
+│
+├── src/
+│   ├── maxcut/
+│   │    ├── qubo.py
+│   │    ├── qaoa_solver.py
+│   │    ├── simulated_annealing.py
+│   │    ├── classical.py
+│   │    └── metrics.py
+│   │
+│   ├── vrptw/
+│   │    ├── dataset.py
+│   │    ├── ortools_solver.py
+│   │    ├── hybrid_solver.py
+│   │    └── clustering.py
+│   │
+│   └── utils/
+│        └── visualization.py
+│
+├── tests/
+├── data/
+└── outputs/
+```
 
-### Setup Instructions
-Clone the repository and initialize the isolated virtual environment:
+---
+
+# Overall Workflow
+
+```mermaid
+flowchart LR
+
+A[Input Data]
+
+A --> B1[Problem 1: Max-Cut]
+A --> B2[Problem 2: VRPTW]
+
+B1 --> C1[Graph Loader]
+C1 --> D1[QUBO Builder]
+
+D1 --> E1[Greedy]
+D1 --> E2[Brute Force]
+D1 --> E3[Simulated Annealing]
+D1 --> E4[QAOA]
+
+E1 --> F1[Evaluation]
+E2 --> F1
+E3 --> F1
+E4 --> F1
+
+B2 --> C2[Synthetic Dataset]
+C2 --> D2[Hybrid Workflow]
+
+D2 --> E5[Customer Clustering]
+E5 --> E6[OR-Tools Routing]
+
+E6 --> F2[Evaluation]
+
+F1 --> G[Plots]
+F2 --> G
+```
+
+---
+
+# Problem 1 — Max-Cut
+
+## Objective
+
+Partition graph vertices into two sets while maximizing edge weights crossing the partition.
+
+## Pipeline
+
+```mermaid
+flowchart TD
+
+A[Read Graph]
+B[Construct QUBO]
+C[Greedy]
+D[Brute Force]
+E[Simulated Annealing]
+F[QAOA]
+G[Compare Results]
+H[Generate Figures]
+
+A-->B
+B-->C
+B-->D
+B-->E
+B-->F
+C-->G
+D-->G
+E-->G
+F-->G
+G-->H
+```
+
+## Solvers
+
+| Solver | Purpose |
+|---------|----------|
+| Greedy | Fast heuristic baseline |
+| Brute Force | Exact solution for small graphs |
+| Simulated Annealing | Quantum-inspired optimizer |
+| QAOA | Gate-based quantum optimizer |
+
+## Results Discussion
+
+The implementation compares solution quality and runtime across all four solvers.
+
+Observations:
+
+- Brute Force produces the optimal cut for small graphs.
+- Greedy is extremely fast but can become trapped in local optima.
+- Simulated Annealing consistently improves over greedy while remaining computationally inexpensive.
+- QAOA demonstrates the workflow of hybrid quantum optimization. On small simulator-based instances its solution quality is competitive, although runtime is dominated by circuit execution and parameter optimization.
+
+These observations are consistent with current NISQ-era quantum optimization, where hybrid algorithms demonstrate promise but do not yet outperform classical exact solvers on small benchmarks.
+
+---
+
+# Problem 2 — VRPTW
+
+## Objective
+
+Minimize total travel distance while satisfying
+
+- vehicle capacities
+- customer demands
+- service time windows
+
+## Hybrid Workflow
+
+```mermaid
+flowchart TD
+
+A[Generate Dataset]
+B[Cluster Customers]
+C[Solve Cluster Routes]
+D[Merge Routes]
+E[Evaluate Distance]
+F[Visualization]
+
+A-->B
+B-->C
+C-->D
+D-->E
+E-->F
+```
+
+## Classical Baseline
+
+Google OR-Tools provides the benchmark solution.
+
+## Hybrid Strategy
+
+Instead of encoding the complete VRPTW into one QUBO (currently impractical for gate-based quantum hardware), the workflow:
+
+1. clusters geographically similar customers,
+2. optimizes each cluster independently,
+3. combines the resulting routes.
+
+This decomposition significantly reduces optimization complexity while illustrating how quantum optimization can complement classical routing.
+
+## Results Discussion
+
+Key observations include:
+
+- OR-Tools consistently provides the best feasible routing solution.
+- The hybrid approach demonstrates a scalable decomposition strategy.
+- Customer clustering reduces search complexity and creates independent optimization subproblems.
+- Although not globally optimal, the hybrid solution illustrates a realistic near-term quantum workflow.
+
+---
+
+# Engineering Decisions
+
+- Modular package layout for maintainability.
+- Configuration separated from algorithms.
+- Visualization isolated from optimization logic.
+- Independent solver implementations enable benchmarking.
+- Tests validate individual modules.
+
+---
+
+# Running the Project
 
 ```bash
-git clone [https://github.com/Prashik123/Qaig_optimization_screening.git](https://github.com/Prashik123/Qaig_optimization_screening.git)
-cd qaig-optimization-suite
+python -m venv .venv
 
-# Create and activate virtual environment
-python -m venv.venv
+source .venv/bin/activate
 
-# Windows Activation:
-.\.venv\Scripts\Activate.ps1
-# Unix/MacOS Activation:
-# source.venv/bin/activate
-
-# Install dependencies
 pip install -r requirements.txt
-Running the Test SuiteTo verify the integrity of the QUBO mathematical formulations and classical constraints before executing the heavy simulations, run the pytest suite:Bashpython -m pytest tests/ -v
-Executing the Main PipelineTo run both optimization problems, extract metrics, and generate all high-resolution visualizations:Bashpython main.py
-🔬 Problem 1: Max-Cut OptimizationMathematical FormulationThe objective is to partition graph vertices into two subsets to maximize the cut weight.QUBO (For D-Wave SA): The classical objective is mapped to binary variables $x_i \in \{0, 1\}$, resulting in the minimization function: $\min \sum_{(i,j) \in E} W_{ij} (2x_i x_j - x_i - x_j)$.Ising Hamiltonian (For Qiskit QAOA): Binary variables are promoted to quantum Pauli-Z operators. The algorithm minimizes the expectation value of $H_C = \sum_{(i,j) \in E} \frac{W_{ij}}{2} (Z_i \otimes Z_j - I)$.Implementation DetailsQiskit 1.x V2 Primitives: The QAOA implementation avoids deprecated legacy functions, utilizing StatevectorEstimator and StatevectorSampler via Primitive Unified Blocs (PUBs) to perfectly mimic utility-scale cloud execution.COBYLA Optimizer: Selected for classical parameter tuning due to its gradient-free robustness against the noisy energy landscapes typical of NISQ-era hardware.Scalability Mitigation: Gate-based statevector simulations scale at $\mathcal{O}(2^n)$ memory. Therefore, QAOA executes on a representative subgraph, while the scalable D-Wave Simulated Annealer can handle utility-scale topologies.🚚 Problem 2: Vehicle Routing with Time Windows (VRPTW)Hybrid Quantum-Classical ArchitectureDirectly encoding inequality constraints (such as vehicle capacities and strict time windows) into a pure QUBO requires binary expansions of continuous variables. This necessitates an exponential volume of auxiliary "slack" qubits, vastly exceeding current hardware limits.To circumvent this, a Two-Phase Hybrid Heuristic is implemented:Phase 1 (Quantum Spatial Clustering): A QUBO is constructed to assign customers to distinct vehicle clusters based on spatial proximity. A massive penalty weight ($\alpha = 2500.0$) is enforced to satisfy the strict topological constraint that no customer is abandoned, avoiding "Penalty Weight Imbalance" traps.Phase 2 (Classical Temporal Routing): The exact classical OR-Tools solver independently evaluates each quantum-generated cluster. Using orthogonal "Dimensions", it precisely calculates cumulative travel distance and enforces strict service durations and time windows.📊 Expected OutputsUpon executing main.py, the following artifacts are automatically generated in the outputs/ directory to prove algorithmic efficacy:Max-Cut Visualizations:maxcut_sa_output.png: The topological graph highlighting disjoint node sets and severed edges.maxcut_qaoa_convergence.png: The optimization trajectory of the QAOA energy cost function over COBYLA iterations.maxcut_qaoa_probs.png: A histogram of the highest-frequency quantum bitstrings measured by the Sampler.qaoa_quantum_circuit.png: The fully unrolled, gate-level schematic of the parameterized ansatz.VRPTW Visualizations:vrptw_qubo_heatmap.png: A 2D thermal heatmap of the raw $Q$ matrix, proving the mathematical formulation.vrptw_phase1_clusters.png: Geographic centroids and spider-web connections validating the D-Wave spatial clustering.vrptw_exact_output.png: Ground-truth routes generated purely classically.vrptw_hybrid_output.png: Final routes generated by the Hybrid Quantum-Classical pipeline.final_solver_comparisons.png: Aggregate side-by-side performance benchmarking charts.Developed for the QAIG Research Engineer Assessment.
-***
 
-### Why this README is highly effective for your interview:
-1. **It proves you understand modern tooling:** Highlighting Qiskit 1.x V2 Primitives and the D-Wave Ocean SDK immediately tells the reviewers you aren't copy-pasting outdated tutorials from 2021.
-2. **It preemptively answers their questions:** The "Hybrid Quantum-Classical Architecture" section explicitly explains *why* you chose a two-phase approach over a pure QUBO (because of the slack variable qubit overhead). This shows deep architectural insight.
-3. **It maps exactly to your Git history:** Because I analyzed your first screenshot, the expected outputs section perfectly matches the exact files you just pushed to GitHub.
+python main.py
+```
 
-Once you have this added to your repository, you are fully prepared to speak with the QAIG team. Let me
+Run tests
+
+```bash
+pytest
+```
+
+---
+
+# Outputs
+
+Generated figures are stored under `outputs/`.
+
+Typical outputs include
+
+- Max-Cut graph visualization
+- Solver comparison plots
+- QAOA convergence
+- VRPTW customer distribution
+- Route visualization
+- Performance metrics
+
+---
+
+# Conclusions
+
+## Max-Cut
+
+This project demonstrates the progression from classical exact optimization to quantum-inspired and gate-based quantum algorithms.
+
+Brute Force establishes the optimum for small instances, Greedy provides a rapid baseline, Simulated Annealing offers a strong heuristic, and QAOA illustrates the hybrid quantum workflow implemented in Qiskit.
+
+## VRPTW
+
+A fully quantum formulation of VRPTW remains beyond the capability of present-day gate-based hardware for practical problem sizes. Consequently, a hybrid decomposition strategy combining customer clustering with OR-Tools routing offers a pragmatic and scalable alternative.
+
+---
+
+# Future Improvements
+
+- IBM Runtime execution
+- Hardware-aware transpilation
+- Recursive QAOA
+- Larger benchmark datasets
+- Parallel optimization
+- Adaptive clustering
+- D-Wave comparison
+- Performance profiling
+
+---
+
+# Discussion Points for QAIG Interview
+
+- Why QUBO?
+- Why QAOA instead of VQE?
+- Why Simulated Annealing?
+- Why OR-Tools?
+- Why hybrid decomposition?
+- Scalability limitations?
+- Current quantum hardware constraints?
+- How would this scale to hundreds of customers?
+
+These design choices reflect practical optimization engineering rather than attempting to replace mature classical solvers with quantum algorithms where current hardware is not yet competitive.
