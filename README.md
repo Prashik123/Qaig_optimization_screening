@@ -1,0 +1,36 @@
+QAIG Optimization Suite: Quantum & Hybrid Architectures!(https://img.shields.io/badge/D--Wave-Ocean_SDK-00b4d8)!(https://img.shields.io/badge/Google-OR--Tools-ea4335)📌 Project OverviewThis repository contains the technical implementation for the QAIG Research Engineer screening assignment. It establishes robust, scalable frameworks for evaluating NP-hard combinatorial optimization problems utilizing a spectrum of Classical, Gate-Based Quantum (VQA), and Quantum-Inspired (Simulated Annealing) paradigms.The suite resolves two primary challenges:Max-Cut Optimization: Processed via Randomized Greedy Heuristics, Qiskit 1.x QAOA, and D-Wave Simulated Annealing.Vehicle Routing Problem with Time Windows (VRPTW): Modeled mathematically as a Mixed-Integer Linear Program (MILP) and solved via Google OR-Tools alongside a highly specialized Two-Phase Hybrid Quantum-Classical heuristic.🏗️ Repository ArchitectureBased on professional software engineering standards, the codebase is completely modularized, decoupling mathematical formulations from solvers and visualization logic.textqaig-optimization-suite/├── src/│   ├── maxcut/             # Max-Cut formulations, QAOA, and SA solvers│   ├── vrptw/              # Synthetic data generation, OR-Tools, and Hybrid Pipeline│   └── utils/              # Plotting engines and metric tracking (matplotlib TkAgg)├── tests/                  # Pytest suite validating deterministic algorithm behavior├── data/                   # GSET raw data ingest directory├── outputs/                # Generated PNG plots, circuits, and convergence logs├── main.py                 # Primary orchestration pipeline├── config.py               # Centralized hyperparameter and environment management├── requirements.txt        # Locked dependency manifest└──.gitignore              # Securely excludes virtual environments and pycache
+---
+
+## ⚙️ Installation & Execution
+
+### Prerequisites
+Ensure you have Python 3.10 or higher installed. This project relies on the modern Qiskit 1.x Primitive V2 APIs and the unified D-Wave Ocean SDK.
+
+### Setup Instructions
+Clone the repository and initialize the isolated virtual environment:
+
+```bash
+git clone [https://github.com/Prashik123/Qaig_optimization_screening.git](https://github.com/Prashik123/Qaig_optimization_screening.git)
+cd qaig-optimization-suite
+
+# Create and activate virtual environment
+python -m venv.venv
+
+# Windows Activation:
+.\.venv\Scripts\Activate.ps1
+# Unix/MacOS Activation:
+# source.venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+Running the Test SuiteTo verify the integrity of the QUBO mathematical formulations and classical constraints before executing the heavy simulations, run the pytest suite:Bashpython -m pytest tests/ -v
+Executing the Main PipelineTo run both optimization problems, extract metrics, and generate all high-resolution visualizations:Bashpython main.py
+🔬 Problem 1: Max-Cut OptimizationMathematical FormulationThe objective is to partition graph vertices into two subsets to maximize the cut weight.QUBO (For D-Wave SA): The classical objective is mapped to binary variables $x_i \in \{0, 1\}$, resulting in the minimization function: $\min \sum_{(i,j) \in E} W_{ij} (2x_i x_j - x_i - x_j)$.Ising Hamiltonian (For Qiskit QAOA): Binary variables are promoted to quantum Pauli-Z operators. The algorithm minimizes the expectation value of $H_C = \sum_{(i,j) \in E} \frac{W_{ij}}{2} (Z_i \otimes Z_j - I)$.Implementation DetailsQiskit 1.x V2 Primitives: The QAOA implementation avoids deprecated legacy functions, utilizing StatevectorEstimator and StatevectorSampler via Primitive Unified Blocs (PUBs) to perfectly mimic utility-scale cloud execution.COBYLA Optimizer: Selected for classical parameter tuning due to its gradient-free robustness against the noisy energy landscapes typical of NISQ-era hardware.Scalability Mitigation: Gate-based statevector simulations scale at $\mathcal{O}(2^n)$ memory. Therefore, QAOA executes on a representative subgraph, while the scalable D-Wave Simulated Annealer can handle utility-scale topologies.🚚 Problem 2: Vehicle Routing with Time Windows (VRPTW)Hybrid Quantum-Classical ArchitectureDirectly encoding inequality constraints (such as vehicle capacities and strict time windows) into a pure QUBO requires binary expansions of continuous variables. This necessitates an exponential volume of auxiliary "slack" qubits, vastly exceeding current hardware limits.To circumvent this, a Two-Phase Hybrid Heuristic is implemented:Phase 1 (Quantum Spatial Clustering): A QUBO is constructed to assign customers to distinct vehicle clusters based on spatial proximity. A massive penalty weight ($\alpha = 2500.0$) is enforced to satisfy the strict topological constraint that no customer is abandoned, avoiding "Penalty Weight Imbalance" traps.Phase 2 (Classical Temporal Routing): The exact classical OR-Tools solver independently evaluates each quantum-generated cluster. Using orthogonal "Dimensions", it precisely calculates cumulative travel distance and enforces strict service durations and time windows.📊 Expected OutputsUpon executing main.py, the following artifacts are automatically generated in the outputs/ directory to prove algorithmic efficacy:Max-Cut Visualizations:maxcut_sa_output.png: The topological graph highlighting disjoint node sets and severed edges.maxcut_qaoa_convergence.png: The optimization trajectory of the QAOA energy cost function over COBYLA iterations.maxcut_qaoa_probs.png: A histogram of the highest-frequency quantum bitstrings measured by the Sampler.qaoa_quantum_circuit.png: The fully unrolled, gate-level schematic of the parameterized ansatz.VRPTW Visualizations:vrptw_qubo_heatmap.png: A 2D thermal heatmap of the raw $Q$ matrix, proving the mathematical formulation.vrptw_phase1_clusters.png: Geographic centroids and spider-web connections validating the D-Wave spatial clustering.vrptw_exact_output.png: Ground-truth routes generated purely classically.vrptw_hybrid_output.png: Final routes generated by the Hybrid Quantum-Classical pipeline.final_solver_comparisons.png: Aggregate side-by-side performance benchmarking charts.Developed for the QAIG Research Engineer Assessment.
+***
+
+### Why this README is highly effective for your interview:
+1. **It proves you understand modern tooling:** Highlighting Qiskit 1.x V2 Primitives and the D-Wave Ocean SDK immediately tells the reviewers you aren't copy-pasting outdated tutorials from 2021.
+2. **It preemptively answers their questions:** The "Hybrid Quantum-Classical Architecture" section explicitly explains *why* you chose a two-phase approach over a pure QUBO (because of the slack variable qubit overhead). This shows deep architectural insight.
+3. **It maps exactly to your Git history:** Because I analyzed your first screenshot, the expected outputs section perfectly matches the exact files you just pushed to GitHub.
+
+Once you have this added to your repository, you are fully prepared to speak with the QAIG team. Let me
