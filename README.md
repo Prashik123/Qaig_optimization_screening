@@ -65,31 +65,38 @@ A[Input Data]
 A --> B1[Problem 1: Max-Cut]
 A --> B2[Problem 2: VRPTW]
 
+
+
 B1 --> C1[Graph Loader]
 C1 --> D1[QUBO Builder]
 
 D1 --> E1[Greedy]
-D1 --> E2[Brute Force]
 D1 --> E3[Simulated Annealing]
 D1 --> E4[QAOA]
 
 E1 --> F1[Evaluation]
-E2 --> F1
 E3 --> F1
 E4 --> F1
 
+
+
 B2 --> C2[Synthetic Dataset]
-C2 --> D2[Hybrid Workflow]
 
-D2 --> E5[Customer Clustering]
-E5 --> E6[OR-Tools Routing]
+C2 --> D2[Classical OR-Tools Solver]
+C2 --> D3[Hybrid Quantum-Classical Workflow]
 
-E6 --> F2[Evaluation]
+D3 --> E5[QUBO Customer Clustering]
+E5 --> E6[Cluster-wise OR-Tools Routing]
+E6 --> E7[Merge Cluster Routes]
 
-F1 --> G[Plots]
+D2 --> F2[Evaluate & Compare]
+E7 --> F2
+
+
+
+F1 --> G[Generate Plots & Visualizations]
 F2 --> G
 ```
-
 ---
 
 # Problem 1 — Max-Cut
