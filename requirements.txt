@@ -1,0 +1,19 @@
+# Core Scientific Computing
+numpy>=1.26.4
+scipy>=1.12.0
+networkx>=3.2.1
+
+# Quantum and Annealing Frameworks
+qiskit>=1.1.0
+qiskit-algorithms>=0.3.0
+dwave-ocean-sdk>=6.9.0
+dwave-neal>=0.6.0
+# Optimization Frameworks
+ortools>=9.10.0
+
+# Visualization
+pylatexenc >=2.09.4
+matplotlib>=3.09.0
+
+# Testing Framework
+pytest>=8.2.0
