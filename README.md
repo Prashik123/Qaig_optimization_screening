@@ -166,30 +166,31 @@ Since VRPTW is an NP-hard combinatorial optimization problem, the repository imp
 
 ## Pipeline
 
-## Hybrid Quantum-Inspired Workflow
-
-The hybrid solver decomposes the VRPTW into two sequential optimization phases. Instead of solving the entire routing problem as one large QUBO, only the customer assignment (clustering) stage is formulated as a QUBO, while the routing stage is solved exactly using Google OR-Tools.
-
 ```mermaid
 flowchart TD
 
 A[Generate Synthetic VRPTW Dataset]
 
-A --> B[Phase 1<br/>Construct Customer Clustering QUBO]
+A --> B1[Classical Exact Solver]
+A --> B2[Hybrid Quantum-Classical Solver]
 
-B --> C[Optimize Clusters<br/>Simulated Annealing]
+%% Classical Solver
+B1 --> C1[Google OR-Tools Constraint Programming]
+C1 --> D1[Optimal Vehicle Routes]
 
-C --> D[Customer Clusters]
+%% Hybrid Solver
+B2 --> C2[Phase 1<br/>Construct Customer Clustering QUBO]
+C2 --> D2[Optimize using Simulated Annealing]
+D2 --> E2[Generate Customer Clusters]
+E2 --> F2[Phase 2<br/>Solve Cluster Routes using Google OR-Tools]
+F2 --> G2[Merge Individual Cluster Routes]
 
-D --> E[Phase 2<br/>Classical OR-Tools Routing]
+%% Final Comparison
+D1 --> H[Compare Distance, Feasibility & Runtime]
+G2 --> H
 
-E --> F[Solve TSP with Time Windows<br/>for Each Cluster]
+H --> I[Generate Route Maps & Performance Plots]
 
-F --> G[Merge Cluster Routes]
-
-G --> H[Evaluate Total Distance]
-
-H --> I[Generate Cluster & Route Visualizations]
 ```
 ---
 
