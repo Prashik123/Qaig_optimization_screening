@@ -95,57 +95,169 @@ F2 --> G
 ```
 
 ---
-# Problem 1 — Max-Cut
+# Problem 1 - Maximum Cut (Max-Cut)
 
 ## Objective
 
-Partition graph vertices into two sets while maximizing edge weights crossing the partition.
+The Maximum Cut (Max-Cut) problem aims to partition the vertices of an undirected weighted graph into two disjoint sets such that the total weight of edges crossing the partition is maximized.
 
-## Pipeline
+Since Max-Cut is an NP-hard combinatorial optimization problem, this repository evaluates multiple optimization paradigms ranging from classical heuristics to quantum-inspired and gate-based quantum algorithms.
+
+---
+
+## Problem Formulation
+
+Given an undirected weighted graph
+
+G=(V,E),
+
+
+the Max-Cut objective is formulated as a Quadratic Unconstrained Binary Optimization (QUBO) problem.
+
+Let
+
+$x_i \in \{0,1\}$
+
+denote the partition assignment of vertex \(i\).
+
+The QUBO objective is: 
+
+$\min
+\sum_{(i,j)\in E}
+W_{ij}
+\left(
+2x_ix_j-x_i-x_j
+\right)$, which is equivalent to maximizing the cut weight.
+
+The QUBO is further mapped to an Ising Hamiltonian using:
+
+$s_i=2x_i-1$,
+
+
+allowing the problem to be solved using both quantum-inspired optimization techniques and gate-based quantum algorithms.
+
+---
+
+## Solution Overview
+
+The repository formulates the Max-Cut problem as a QUBO and evaluates multiple optimization strategies on the same graph instance.
+
+Each solver operates independently on the common QUBO formulation, enabling a direct comparison of solution quality and optimization performance.
+
+---
+
+## Solution Pipeline
 
 ```mermaid
 flowchart TD
 
-A[Read Graph]
-B[Construct QUBO]
-C[Greedy]
-E[Simulated Annealing]
-F[QAOA]
-G[Compare Results]
-H[Generate Figures]
+A[Load GSET Graph files]
 
-A-->B
-B-->C
-B-->E
-B-->F
-C-->G
-E-->G
-F-->G
-G-->H
+A --> B[Construct QUBO Formulation]
+
+B --> C1[Greedy Heuristic]
+B --> C2[Simulated Annealing]
+B --> C3[QAOA]
+
+C1 --> D[Evaluate Cut Value]
+C2 --> D
+C3 --> D
+
+D --> E[Compare Solver Performance]
+
+E --> F[Generate Visualizations & Metrics]
 ```
 
-## Solvers
+---
 
-| Solver | Purpose |
-|---------|----------|
-| Greedy | Fast heuristic baseline |
-| Brute Force | Exact solution for small graphs |
-| Simulated Annealing | Quantum-inspired optimizer |
-| QAOA | Gate-based quantum optimizer |
+## Optimization Algorithms
+
+### Greedy Heuristic
+
+A classical local-search heuristic is used as a computationally inexpensive baseline.
+
+The algorithm begins with an initial partition and iteratively flips vertex assignments whenever the cut value improves.
+
+Although computationally efficient, the greedy strategy may converge to local optima.
+
+---
+
+### Simulated Annealing
+
+The QUBO formulation is optimized using **D-Wave Ocean's Simulated Annealing Sampler**, providing a quantum-inspired optimization approach.
+
+The implementation employs:
+
+- **1000 reads**
+- **1000 sweeps**
+
+to improve exploration of the solution space and obtain high-quality partitions.
+
+---
+
+### Quantum Approximate Optimization Algorithm (QAOA)
+
+The repository implements a gate-based quantum solution using **Qiskit**.
+
+The Ising Hamiltonian derived from the QUBO is used as the cost operator for a QAOA ansatz with:
+
+- QAOA depth (p = 2)
+- COBYLA optimizer
+- Maximum 50 optimization iterations
+
+The optimized quantum circuit is simulated, and the most probable measurement outcome is selected as the Max-Cut solution.
+
+---
+
+## Generated Outputs
+
+The Max-Cut pipeline automatically generates:
+
+| Output | Description |
+|---------|-------------|
+| `maxcut_sa_output.png` | Best graph partition obtained using Simulated Annealing |
+| `maxcut_qaoa_convergence.png` | QAOA optimization convergence over iterations |
+| `maxcut_qaoa_probs.png` | Measurement probability distribution of QAOA bitstrings |
+| `qaoa_quantum_circuit.png` | Quantum circuit used for the QAOA implementation |
+| `final_solver_comparisons.png` | Overall comparison of Max-Cut and VRPTW solver performance |
+
+---
+
+## Experimental Results
+
+The implementation compares the solution quality produced by each optimization strategy.
+
+| Solver | Approximate Cut Value |
+|---------|----------------------:|
+| Greedy Heuristic | **≈ 13** |
+| Simulated Annealing | **≈ 13** |
+| QAOA | **≈ 10** |
+
+---
 
 ## Results Discussion
 
-The implementation compares solution quality and runtime across all four solvers.
+The experimental observations demonstrate the strengths and limitations of each optimization approach.
 
-Observations:
+- The **Greedy Heuristic** provides a fast baseline solution with minimal computational overhead.
 
-- Brute Force produces the optimal cut for small graphs.
-- Greedy is extremely fast but can become trapped in local optima.
-- Simulated Annealing consistently improves over greedy while remaining computationally inexpensive.
-- QAOA demonstrates the workflow of hybrid quantum optimization. On small simulator-based instances its solution quality is competitive, although runtime is dominated by circuit execution and parameter optimization.
+- **Simulated Annealing** consistently produces solutions comparable to the greedy approach while offering better exploration of the optimization landscape through probabilistic search.
 
-These observations are consistent with current NISQ-era quantum optimization, where hybrid algorithms demonstrate promise but do not yet outperform classical exact solvers on small benchmarks.
+- **QAOA** successfully demonstrates the complete hybrid quantum optimization workflow, including QUBO formulation, Ising mapping, parameter optimization, and quantum circuit execution.
 
+- For the benchmark graph considered in this project, the shallow QAOA circuit (\(p=2\)) achieves a slightly lower cut value than the classical and quantum-inspired approaches, reflecting the current limitations of near-term gate-based quantum optimization.
+
+---
+
+## Key Takeaways
+
+- A common QUBO formulation enables fair comparison across multiple optimization paradigms.
+
+- Simulated Annealing serves as an effective quantum-inspired optimizer for small and medium-sized Max-Cut instances.
+
+- QAOA illustrates the complete hybrid quantum optimization workflow implemented with Qiskit.
+
+- The repository provides a modular framework for benchmarking classical, quantum-inspired, and gate-based quantum optimization techniques on combinatorial graph problems.
 ---
 # Problem 2 - Vehicle Routing with Time Windows (VRPTW)
 
