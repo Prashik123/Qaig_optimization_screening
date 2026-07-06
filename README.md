@@ -546,12 +546,10 @@ A fully quantum formulation of VRPTW remains beyond the capability of present-da
 # Future Improvements
 
 - IBM Runtime execution
-- Hardware-aware transpilation
+- Hardware-aware transpilation (Deploying Error suppresion and mitigation techniques)
 - Recursive QAOA
 - Larger benchmark datasets
-- Parallel optimization
 - Adaptive clustering
-- D-Wave comparison
-- Performance profiling
+- D-Wave comparison (Ocean - SDK)
 
 
