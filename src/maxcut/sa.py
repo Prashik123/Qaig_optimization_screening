@@ -1,5 +1,5 @@
 # Simulated Annealing solver using the dwave-neal library.
-# Specifically architected to handle utility-scale QUBO matrices (e.g., full GSET graphs).
+# Specifically architected to handle utility-scale QUBO matrices (e.g.: full GSET graphs).
 
 from typing import Tuple
 import networkx as nx

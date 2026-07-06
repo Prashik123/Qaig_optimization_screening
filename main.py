@@ -3,7 +3,7 @@
 import os
 import sys
 
-# Inject local path workspace rules for internal module resolution
+# Injecting local path workspace rules for internal module resolution
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import warnings
@@ -18,7 +18,7 @@ from src.vrptw.dataset import generate_vrptw_dataset, calculate_distance_matrix
 from src.vrptw.ortools_solver import solve_vrptw_exact
 from src.vrptw.hybrid_solver import solve_hybrid_vrptw
 
-# UPDATED: Import all visualization tools
+# Import all visualization tools
 from src.utils.visualization import (
     plot_maxcut_partition, 
     plot_vrptw_routes, 
