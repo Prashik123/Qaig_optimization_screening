@@ -226,12 +226,8 @@ which encourages geographically nearby customers to belong to the same cluster,
 
 and
 
-- **Assignment Penalty**
-
-$\alpha\left(\sum_v y_{i,v}-1\right)^2$,
+ - **Assignment Penalty** : $\alpha\left(\sum_v y_{i,v}-1\right)^2$,
 with
-
-
 $\alpha=2500$,
 
 ensuring that every customer is assigned to exactly one vehicle.
@@ -319,13 +315,9 @@ The obtained routing distances are approximately
 The experimental observations are consistent with expectations for current hybrid optimization methods.
 
 - The classical OR-Tools solver produces the lowest routing cost by optimizing the complete problem globally.
-
 - The hybrid approach first partitions customers into spatially coherent clusters before solving each routing subproblem independently.
-
 - Although this decomposition introduces some loss of global optimality, it significantly reduces the optimization complexity and illustrates a practical near-term quantum optimization workflow.
-
 - The clustering stage demonstrates how quantum-inspired optimization techniques can be integrated into larger combinatorial optimization pipelines.
-
 - Both approaches satisfy all vehicle capacity and customer time-window constraints.
 
 ---
@@ -333,12 +325,80 @@ The experimental observations are consistent with expectations for current hybri
 ## Key Takeaways
 
 - Google OR-Tools serves as the exact benchmark for solution quality.
-
 - The hybrid quantum-classical solver demonstrates a scalable decomposition strategy for large routing problems.
-
 - QUBO-based customer clustering reduces search complexity while maintaining feasible routing solutions.
-
 - This workflow represents a realistic application of quantum-inspired optimization in the NISQ era, where quantum techniques complement rather than replace high-performance classical solvers.
+---
+
+# Running the Project
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/Prashik123/Qaig_optimization_screening.git
+cd Qaig_optimization_screening
+```
+
+---
+
+## 2. Create a Virtual Environment
+
+### Windows (PowerShell / Command Prompt)
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+## 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 4. Execute the Complete Pipeline
+
+Run the following command to execute both the **Max-Cut** and **VRPTW** optimization pipelines:
+
+```bash
+python main.py
+```
+
+The program will:
+
+- Execute the Max-Cut benchmark
+- Execute the Classical OR-Tools VRPTW solver
+- Execute the Hybrid Quantum-Classical VRPTW solver
+- Generate all visualizations
+- Save the outputs in the `outputs/` directory
+
+---
+
+## 5. Run Unit Tests
+
+To verify that the individual modules are functioning correctly, execute:
+
+```bash
+pytest
+```
+
+or
+
+```bash
+pytest tests/
+```
+
 ---
 
 # Outputs
