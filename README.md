@@ -106,7 +106,6 @@ flowchart TD
 A[Read Graph]
 B[Construct QUBO]
 C[Greedy]
-D[Brute Force]
 E[Simulated Annealing]
 F[QAOA]
 G[Compare Results]
@@ -114,11 +113,9 @@ H[Generate Figures]
 
 A-->B
 B-->C
-B-->D
 B-->E
 B-->F
 C-->G
-D-->G
 E-->G
 F-->G
 G-->H
