@@ -65,7 +65,7 @@ A[Input Data]
 A --> B1[Problem 1: Max-Cut]
 A --> B2[Problem 2: VRPTW]
 
-%% ---------------- Max-Cut ----------------
+
 
 B1 --> C1[Graph Loader]
 C1 --> D1[QUBO Formulation]
@@ -78,7 +78,6 @@ E1 --> F1[Performance Evaluation]
 E2 --> F1
 E3 --> F1
 
-%% ---------------- VRPTW ----------------
 
 B2 --> C2[Synthetic VRPTW Dataset]
 
@@ -148,7 +147,7 @@ Observations:
 These observations are consistent with current NISQ-era quantum optimization, where hybrid algorithms demonstrate promise but do not yet outperform classical exact solvers on small benchmarks.
 
 ---
-# Problem 2 — Vehicle Routing with Time Windows (VRPTW)
+# Problem 2 - Vehicle Routing with Time Windows (VRPTW)
 
 ## Objective
 
@@ -165,6 +164,35 @@ Since VRPTW is an NP-hard combinatorial optimization problem, the repository imp
 
 ---
 
+## Pipeline
+
+## Hybrid Quantum-Inspired Workflow
+
+The hybrid solver decomposes the VRPTW into two sequential optimization phases. Instead of solving the entire routing problem as one large QUBO, only the customer assignment (clustering) stage is formulated as a QUBO, while the routing stage is solved exactly using Google OR-Tools.
+
+```mermaid
+flowchart TD
+
+A[Generate Synthetic VRPTW Dataset]
+
+A --> B[Phase 1<br/>Construct Customer Clustering QUBO]
+
+B --> C[Optimize Clusters<br/>Simulated Annealing]
+
+C --> D[Customer Clusters]
+
+D --> E[Phase 2<br/>Classical OR-Tools Routing]
+
+E --> F[Solve TSP with Time Windows<br/>for Each Cluster]
+
+F --> G[Merge Cluster Routes]
+
+G --> H[Evaluate Total Distance]
+
+H --> I[Generate Cluster & Route Visualizations]
+```
+---
+
 ## Problem Formulation
 
 The problem consists of a single depot and multiple geographically distributed customers.
@@ -174,7 +202,7 @@ Each customer is characterized by:
 - Cartesian coordinates
 - Demand
 - Service time
-- Time window \([a_i,b_i]\)
+- Time window $[a_i,b_i]$
 
 The objective is to minimize the overall routing cost while satisfying capacity and scheduling constraints.
 
@@ -248,31 +276,6 @@ Google OR-Tools is then applied separately to each cluster while enforcing:
 - depot start/end conditions.
 
 The optimized cluster routes are subsequently merged to obtain the complete hybrid routing solution.
-
----
-
-## Overall Execution Pipeline
-
-The implementation executes **both solution strategies** and compares their performance.
-
-```mermaid
-flowchart TD
-
-A[Generate Synthetic VRPTW Dataset]
-
-A --> B1[Classical Exact Solver<br/>Google OR-Tools]
-A --> B2[Hybrid Quantum-Classical Solver]
-
-B2 --> C[Phase 1:<br/>QUBO Customer Clustering]
-C --> D[Phase 2:<br/>OR-Tools Route Optimization]
-D --> E[Merge Cluster Routes]
-
-B1 --> F[Evaluate Total Distance]
-E --> F
-
-F --> G[Generate Visualizations]
-G --> H[Compare Solver Performance]
-```
 
 ---
 
