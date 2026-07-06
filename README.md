@@ -267,17 +267,4 @@ A fully quantum formulation of VRPTW remains beyond the capability of present-da
 - D-Wave comparison
 - Performance profiling
 
----
 
-# Discussion Points for QAIG Interview
-
-- Why QUBO?
-- Why QAOA instead of VQE?
-- Why Simulated Annealing?
-- Why OR-Tools?
-- Why hybrid decomposition?
-- Scalability limitations?
-- Current quantum hardware constraints?
-- How would this scale to hundreds of customers?
-
-These design choices reflect practical optimization engineering rather than attempting to replace mature classical solvers with quantum algorithms where current hardware is not yet competitive.
