@@ -22,28 +22,33 @@ Qaig_optimization_screening/
 │
 ├── README.md
 ├── main.py
+├── __init__.py
 ├── config.py
+├── report.pdf
 ├── requirements.txt
 ├── pytest.ini
 │
 ├── src/
 │   ├── maxcut/
-│   │    ├── qubo.py
-│   │    ├── qaoa_solver.py
-│   │    ├── simulated_annealing.py
-│   │    ├── classical.py
-│   │    └── metrics.py
+│   │    ├── __init__.py
+│   │    ├── formulations.py
+│   │    ├── qaoa.py
+│   │    ├── sa.py
+│   │    └── classical.py
 │   │
 │   ├── vrptw/
+│   │    ├── __init__.py
 │   │    ├── dataset.py
 │   │    ├── ortools_solver.py
-│   │    ├── hybrid_solver.py
-│   │    └── clustering.py
+│   │    └──  hybrid_solver.py
 │   │
 │   └── utils/
-│        └── visualization.py
+│   │    ├── __init__.py
+│   │    └── visualization.py
 │
 ├── tests/
+│   │    ├── test_maxcut.py
+│   │    └── test_vrptw.py
 ├── data/
 └── outputs/
 ```
