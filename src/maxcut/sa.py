@@ -5,7 +5,7 @@ from typing import Tuple
 import networkx as nx
 import numpy as np
 from neal import SimulatedAnnealingSampler
-from .formulations import build_qubo_dictionary  # Fixed: Added missing space after dot
+from .formulations import build_qubo_dictionary 
 
 def sa_max_cut(graph: nx.Graph, num_reads: int = 1000, sweeps: int = 1000) -> Tuple[np.ndarray, float]:
     
@@ -31,7 +31,7 @@ def sa_max_cut(graph: nx.Graph, num_reads: int = 1000, sweeps: int = 1000) -> Tu
         
     cut_value = 0.0
     for u, v, data in graph.edges(data=True):
-        if partitions[nodes.index(u)] != partitions[nodes.index(v)]:  # Fixed: Added whitespace around operator
+        if partitions[nodes.index(u)] != partitions[nodes.index(v)]: 
             cut_value += data.get('weight', 1.0)
             
     return partitions, cut_value

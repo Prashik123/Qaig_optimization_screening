@@ -29,7 +29,6 @@ def solve_vrptw_exact(
     routing.SetArcCostEvaluatorOfAllVehicles(transit_callback_index)
 
     # Callback 2: Capacity Dimension
-    # Fixed: Prefixed with a [0] array to represent the depot value baseline
     demands = [0] + [c.demand for c in customers] 
     def demand_callback(from_index):
         from_node = manager.IndexToNode(from_index)
@@ -45,7 +44,6 @@ def solve_vrptw_exact(
     )
 
     # Callback 3: Time Windows Dimension
-    # Fixed: Prefixed with a [0] array to handle depot baseline alignment
     service_times = [0] + [c.service_time for c in customers]
     time_windows = [(0, 9999)] + [(c.tw_start, c.tw_end) for c in customers]
 
@@ -85,11 +83,11 @@ def solve_vrptw_exact(
         return None, 0.0
 
     # Route Extraction Logic
-    routes = []  # Fixed: Closed empty list array assignment properly
+    routes = []  
     total_distance = 0.0
     for vehicle_id in range(num_vehicles):
         index = routing.Start(vehicle_id)
-        route = []  # Fixed: Closed empty sub-list array assignment properly
+        route = [] 
         route_dist = 0.0
         while not routing.IsEnd(index):
             node_index = manager.IndexToNode(index)

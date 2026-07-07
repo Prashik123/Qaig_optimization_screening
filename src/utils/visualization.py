@@ -6,10 +6,9 @@ import numpy as np
 import networkx as nx
 import config
 
-# SAFE MATPLOTLIB IMPORT FALLBACK FOR PYTHON 3.10+ COMPATIBILITY
 try:
     import matplotlib
-    # Use TkAgg to enable interactive pop-up window rendering in VS Code
+    # Using TkAgg to enable interactive pop-up window rendering 
     matplotlib.use('TkAgg')  
     import matplotlib.pyplot as plt
     HAS_MATPLOTLIB = True
@@ -156,11 +155,11 @@ def plot_vrptw_routes(
 def plot_vrptw_clusters(
     depot, clusters: Dict[int, List], title: str, filename: str
 ):
-    """
-    Visualizes the Phase 1 QUBO assignment, proving that 
-    the spatial quantum clustering successfully segregates nodes before classical routing.
-    Includes geographic centroids and spider-web connections to demonstrate optimization.
-    """
+
+    # Visualizes the Phase 1 QUBO assignment, proving that 
+    # the spatial quantum clustering successfully segregates nodes before classical routing.
+    # Includes geographic centroids and spider-web connections to demonstrate optimization.
+    
     if not HAS_MATPLOTLIB:
         return
         
@@ -220,10 +219,10 @@ def plot_vrptw_clusters(
 
 
 def plot_qubo_matrix(Q: dict, title: str, filename: str):
-    """
-    Renders the raw QUBO dictionary as a 2D Heatmap. 
-    This provides visual proof of mathematical modeling capabilities.
-    """
+    
+    # Renders the raw QUBO dictionary as a 2D Heatmap. 
+    # This provides visual proof of mathematical modeling capabilities.
+    
     if not HAS_MATPLOTLIB or not Q:
         return
         
@@ -273,9 +272,9 @@ def plot_qaoa_convergence(history: list, filename: str = "qaoa_convergence.png")
 def plot_qaoa_probabilities(
     counts: dict, title: str, filename: str, top_k: int = 15
 ):
-    """
-    Generates a histogram of the most frequently measured quantum bitstrings.
-    """
+    
+    # Generates a histogram of the most frequently measured quantum bitstrings.
+    
     if not HAS_MATPLOTLIB or not counts:
         return
         
@@ -283,7 +282,6 @@ def plot_qaoa_probabilities(
     
     sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:top_k]
     
-    # Fixed index extraction to correctly unpack the bitstring
     bitstrings = [x[0] for x in sorted_counts]
     frequencies = [x[1] for x in sorted_counts]
     
@@ -301,7 +299,7 @@ def plot_qaoa_probabilities(
 def plot_solver_metrics(
     maxcut_data: dict, vrptw_data: dict, filename: str = "solver_comparison.png"
 ):
-    """Generates an analytical bar chart comparing the objective scores side-by-side."""
+    # Generates an analytical bar chart comparing the objective scores side-by-side.
     if not HAS_MATPLOTLIB:
         return
         

@@ -21,7 +21,6 @@ class QAOASolver:
         self.estimator: StatevectorEstimator = StatevectorEstimator()
         self.sampler: StatevectorSampler = StatevectorSampler()
         
-        # Fixed: Corrected incomplete list instantiation layout error
         self.cost_history: List[float] = []
         self.energy_history: List[float] = []  # Explicit alias added to sync with main.py convergence tracking
         self.counts: Dict[str, int] = {}
@@ -33,11 +32,11 @@ class QAOASolver:
         job = self.estimator.run([pub])
         result = job.result() 
         
-        # Fixed: Read index 0 to correctly target the PubResult payload inside V2 Primitives
+        # Read the expectation value from the result object, handling both 1.x and 2.x API changes
         pub_result = result[0]
         expectation_value = pub_result.data.evs
         
-        # Fixed: Extracted the 0-dimensional array item safely to support Python 3.14/NumPy 2.x
+        # Handle the 2.x API change for extracting the expectation value
         val: float = float(np.asarray(expectation_value).item())
         
         self.cost_history.append(val)
@@ -69,7 +68,7 @@ class QAOASolver:
         job = self.sampler.run([pub], shots=1024)
         result = job.result()
         
-        # Fixed: Read index 0 out of the PrimitiveResult block before calling classical bitstring extraction
+
         pub_result_sampler = result[0]
         
         # Support both new bitstring bit data envelopes (.get_counts() or via classical bit fields)

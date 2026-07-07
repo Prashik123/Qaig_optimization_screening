@@ -20,13 +20,13 @@ def generate_vrptw_dataset(num_customers: int, grid_size: int = 100, seed: int =
     
     np.random.seed(seed)
     
-    # Fixed: Added uniform spacing around division operators
+    # Uniform spacing around division operators
     depot = Customer(
         id=0, x=grid_size / 2, y=grid_size / 2, demand=0, 
         tw_start=0, tw_end=9999, service_time=0
     )
     
-    customers = []  # Fixed: Completed the empty array assignment configuration
+    customers = []  
     for i in range(1, num_customers + 1):
         x = np.random.uniform(0, grid_size)
         y = np.random.uniform(0, grid_size)

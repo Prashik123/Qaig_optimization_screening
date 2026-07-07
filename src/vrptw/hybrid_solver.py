@@ -24,7 +24,7 @@ def build_clustering_qubo(dist_matrix: np.ndarray, num_customers: int, num_vehic
     def var_idx(c: int, v: int) -> int: 
         return c * num_vehicles + v
     
-    ALPHA: float = 2500.0  # Dominant penalty for violating the strict 'one cluster per customer' rule
+    ALPHA: float = 2500.0  # Dominant penalty for violating the strict one cluster per customer rule
     BETA: float = 1.0     # Minor penalty to minimize intra-cluster geographical distance
     
     # 1. Spatial Proximity Optimization
@@ -69,7 +69,6 @@ def solve_hybrid_vrptw(
     sampleset = sampler.sample_qubo(Q, num_reads=3000, num_sweeps=3000)
     best_sample: Dict[int, int] = sampleset.first.sample
     
-    # Fixed: Corrected malformed dictionary comprehension syntax error
     clusters: Dict[int, List[Customer]] = {v: [] for v in range(num_vehicles)}
     for i, customer in enumerate(customers):
         for v in range(num_vehicles):
@@ -78,7 +77,6 @@ def solve_hybrid_vrptw(
                 break
                 
     # Phase 2: Classical TSP Evaluation per Cluster
-    # Fixed: Corrected unassigned reference layout syntax error
     global_routes: List[List[int]] = []
     total_distance: float = 0.0
     
@@ -96,7 +94,7 @@ def solve_hybrid_vrptw(
         # Execute exact optimization constrained to this specific geographic cluster
         routes, dist = solve_vrptw_exact(sub_dist_matrix, cluster_members, 1, vehicle_capacity)
         
-        # Fixed: Recursively unpack and unwrap nested multi-vehicle routes arrays
+        # Recursively unpack and unwrap nested multi-vehicle routes arrays
         if routes:
             if isinstance(routes, list) and len(routes) > 0 and isinstance(routes[0], list):
                 for route in routes:
