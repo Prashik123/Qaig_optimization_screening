@@ -11,7 +11,7 @@ The project addresses two NP-hard optimization problems:
 1. **Maximum Cut (Max-Cut)** using classical, quantum-inspired, and gate-based quantum approaches.
 2. **Vehicle Routing Problem with Time Windows (VRPTW)** using a hybrid quantum-classical workflow.
 
-The implementation emphasizes clean software architecture, modularity, reproducibility, and explainable engineering decisions.
+The implementation emphasizes clean software architecture, modularity, reproducibility, and explainable engineering decisions. All experiments use a fixed random seed (**42**), centrally defined in `config.py`, so every reported result is exactly reproducible by re-running `main.py`.
 
 ---
 
@@ -151,7 +151,7 @@ Each solver operates independently on the common QUBO formulation, enabling a di
 ```mermaid
 flowchart TD
 
-A[Load GSET Graph files]
+A[Generate Graph Instance<br/>Synthetic Erdos-Renyi n=8, p=0.5, seed=42<br/>GSET loader available for larger benchmark graphs]
 
 A --> B[Construct QUBO Formulation]
 
@@ -167,6 +167,8 @@ D --> E[Compare Solver Performance]
 
 E --> F[Generate Visualizations & Metrics]
 ```
+
+> **Note:** The default pipeline (`main.py`) generates a small synthetic Erdős–Rényi graph (8 nodes, 16 edges, p = 0.5, seed = 42) rather than loading a GSET file. `formulations.py` includes a ready-to-use GSET-format loader (`load_gset_graph()`), but formal benchmarking against the full GSET suite (e.g., G1, G14, G22, G55) and published Toshiba Digital Annealer results was not executed for this submission — see **Future Improvements**.
 
 ---
 
@@ -225,13 +227,14 @@ The Max-Cut pipeline automatically generates:
 
 ## Experimental Results
 
-The implementation compares the solution quality produced by each optimization strategy.
+The demonstration instance is small enough (8 nodes, 16 edges) to brute-force enumerate all $2^8 = 256$ possible partitions, which confirms a **global optimum cut of 13**, achieved by exactly 2 of the 256 partitions. This ground truth is used below to assess how close each solver gets to the true optimum.
 
-| Solver | Approximate Cut Value |
-|---------|----------------------:|
-| Greedy Heuristic | **≈ 13** |
-| Simulated Annealing | **≈ 13** |
-| QAOA | **≈ 10** |
+| Solver | Cut Value | Reached Global Optimum? |
+|---------|----------:|:---:|
+| Brute-Force (ground truth) | 13 | — |
+| Greedy Heuristic | 13 | Yes |
+| Simulated Annealing | 13 | Yes |
+| QAOA (p = 2) | 10 | No |
 
 ---
 
@@ -239,19 +242,23 @@ The implementation compares the solution quality produced by each optimization s
 
 The experimental observations demonstrate the strengths and limitations of each optimization approach.
 
+- A brute-force enumeration of all 256 possible partitions on this 8-node instance confirms that 13 is the true global optimum, reached by only 2 of the 256 partitions — providing an independent ground truth against which the Greedy and Simulated Annealing results are validated.
+
 - The **Greedy Heuristic** provides a fast baseline solution with minimal computational overhead.
 
 - **Simulated Annealing** consistently produces solutions comparable to the greedy approach while offering better exploration of the optimization landscape through probabilistic search.
 
 - **QAOA** successfully demonstrates the complete hybrid quantum optimization workflow, including QUBO formulation, Ising mapping, parameter optimization, and quantum circuit execution.
 
-- For the benchmark graph considered in this project, the shallow QAOA circuit (\(p=2\)) achieves a slightly lower cut value than the classical and quantum-inspired approaches, reflecting the current limitations of near-term gate-based quantum optimization.
+- For the benchmark graph considered in this project, the shallow QAOA circuit (\(p=2\)) achieves a lower cut value (10, a 76.9% approximation ratio) than the classical and quantum-inspired approaches, reflecting the current limitations of near-term gate-based quantum optimization.
 
 ---
 
 ## Key Takeaways
 
 - A common QUBO formulation enables fair comparison across multiple optimization paradigms.
+
+- Brute-force verification on small instances (e.g., this 8-node demonstration graph) confirms that Greedy and Simulated Annealing reach the true global optimum, not just a locally good solution.
 
 - Simulated Annealing serves as an effective quantum-inspired optimizer for small and medium-sized Max-Cut instances.
 
@@ -551,5 +558,5 @@ A fully quantum formulation of VRPTW remains beyond the capability of present-da
 - Larger benchmark datasets
 - Adaptive clustering
 - D-Wave comparison (Ocean - SDK)
-
-
+- GSET benchmark suite execution (G1, G14, G22, G55) with results compared against published Toshiba Digital Annealer figures
+- Resolve known test/config drift in the clustering QUBO penalty test (stale α assertion vs. production value)
