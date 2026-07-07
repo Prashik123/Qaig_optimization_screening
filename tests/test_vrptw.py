@@ -1,5 +1,3 @@
-# tests/test_vrptw.py
-
 # Unit tests validating synthetic data constraints and VRPTW formulations.
 
 import numpy as np
