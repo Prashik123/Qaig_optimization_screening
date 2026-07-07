@@ -24,7 +24,7 @@ Qaig_optimization_screening/
 ├── main.py
 ├── __init__.py
 ├── config.py
-├── report.pdf
+├── Report.pdf
 ├── requirements.txt
 ├── pytest.ini
 │
