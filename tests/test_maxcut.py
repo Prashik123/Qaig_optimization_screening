@@ -1,5 +1,3 @@
-
-
 # Unit tests validating QUBO generation, QAOA, and SA optimization convergence.
 import networkx as nx
 import numpy as np
